@@ -2,7 +2,9 @@
 library(data.table)
 library(dplyr)
 library(tidyr)
+library(knitr)
 
+setwd("/Users/workingdirectory") # Set this to your working directory 
 
 url <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
 download.file(url, destfile = "./data/Data.zip")
@@ -103,6 +105,9 @@ setkey(tot_data, subject, activity, domain_ftr, acceleration_ftr, instrument_ftr
 ## TIDY data as output
 tidy_data <- tot_data[, list(count = .N, average = mean(value)), by=key(tot_data)]
 
-library(knitr)
-knit("makeCodebook.Rmd", output="codebook.md", encoding="ISO8859-1", quiet=TRUE)
-markdownToHTML("codebook.md", "codebook.html")
+
+## Writing the tidy data to working directory
+write.table(tidy_data, file = "tidydata.txt", quote=FALSE, sep="\t", row.names=FALSE)
+
+## Run the markdown code file to generate the codebook
+knit("markdown_generator.Rmd", output="Codebook.md", encoding="ISO8859-1", quiet=TRUE)

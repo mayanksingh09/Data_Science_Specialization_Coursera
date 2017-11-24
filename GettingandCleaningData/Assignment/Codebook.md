@@ -1,5 +1,6 @@
 Codebook
 ========
+Codebook was generated on 2017-11-24 10:14:41 during the same process that generated the dataset. See `run_analysis.md` or `run_analysis.html` for details on dataset creation.
 
 Variable list and descriptions
 ------------------------------
@@ -38,7 +39,7 @@ str(tidy_data)
 ##  $ jerk_ftr        : Factor w/ 2 levels NA,"Jerk": 1 1 1 1 1 1 1 1 2 2 ...
 ##  $ magnitude_ftr   : Factor w/ 2 levels NA,"Magnitude": 1 1 1 1 1 1 2 2 1 1 ...
 ##  $ variable_ftr    : Factor w/ 2 levels "Mean","SD": 1 1 1 2 2 2 1 2 1 1 ...
-##  $ featAxis        : Factor w/ 4 levels NA,"X","Y","Z": 2 3 4 2 3 4 1 1 2 3 ...
+##  $ axis_ftr        : Factor w/ 4 levels NA,"X","Y","Z": 2 3 4 2 3 4 1 1 2 3 ...
 ##  $ count           : int  50 50 50 50 50 50 50 50 50 50 ...
 ##  $ average         : num  -0.0166 -0.0645 0.1487 -0.8735 -0.9511 ...
 ##  - attr(*, "sorted")= chr  "subject" "activity" "domain_ftr" "acceleration_ftr" ...
@@ -56,7 +57,7 @@ key(tidy_data)
 ```
 ## [1] "subject"          "activity"         "domain_ftr"      
 ## [4] "acceleration_ftr" "instrument_ftr"   "jerk_ftr"        
-## [7] "magnitude_ftr"    "variable_ftr"     "featAxis"
+## [7] "magnitude_ftr"    "variable_ftr"     "axis_ftr"
 ```
 
 Show a few rows of the dataset
@@ -80,7 +81,7 @@ tidy_data
 ## 11878:      30 WALKING_UPSTAIRS       Freq             Body  Accelerometer
 ## 11879:      30 WALKING_UPSTAIRS       Freq             Body  Accelerometer
 ## 11880:      30 WALKING_UPSTAIRS       Freq             Body  Accelerometer
-##        jerk_ftr magnitude_ftr variable_ftr featAxis count     average
+##        jerk_ftr magnitude_ftr variable_ftr axis_ftr count     average
 ##     1:       NA            NA         Mean        X    50 -0.01655309
 ##     2:       NA            NA         Mean        Y    50 -0.06448612
 ##     3:       NA            NA         Mean        Z    50  0.14868944
@@ -110,7 +111,7 @@ summary(tidy_data)
 ##  Mean   :15.5   WALKING           :1980                               
 ##  3rd Qu.:23.0   WALKING_DOWNSTAIRS:1980                               
 ##  Max.   :30.0   WALKING_UPSTAIRS  :1980                               
-##        instrument_ftr jerk_ftr      magnitude_ftr  variable_ftr featAxis 
+##        instrument_ftr jerk_ftr      magnitude_ftr  variable_ftr axis_ftr 
 ##  Accelerometer:7200   NA  :7200   NA       :8640   Mean:5940    NA:3240  
 ##  Gyroscope    :4680   Jerk:4680   Magnitude:3240   SD  :5940    X :2880  
 ##                                                                 Y :2880  
@@ -135,9 +136,6 @@ tidy_data[, .N, by=c(names(tidy_data)[grep("^feat", names(tidy_data))])]
 ```
 
 ```
-##    featAxis    N
-## 1:        X 2880
-## 2:        Y 2880
-## 3:        Z 2880
-## 4:       NA 3240
+##        N
+## 1: 11880
 ```

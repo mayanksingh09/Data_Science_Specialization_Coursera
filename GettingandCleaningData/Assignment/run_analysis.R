@@ -69,7 +69,7 @@ tot_data$feature <- factor(tot_data$feature_name) #converting to factor
 
 ## Feature names
 custom_grep <- function (text) {
-            grepl(text, tot_data$feature)
+  grepl(text, tot_data$feature)
 }
 
 ## Two category features
@@ -98,9 +98,9 @@ tot_data$magnitude_ftr <- factor(custom_grep("Mag"), labels=c(NA, "Magnitude"))
 n <- 3
 y <- matrix(seq(1, n), nrow=n)
 x <- matrix(c(custom_grep("-X"), custom_grep("-Y"), custom_grep("-Z")), ncol=nrow(y))
-tot_data$featAxis <- factor(x %*% y, labels=c(NA, "X", "Y", "Z"))
+tot_data$axis_ftr <- factor(x %*% y, labels=c(NA, "X", "Y", "Z"))
 
-setkey(tot_data, subject, activity, domain_ftr, acceleration_ftr, instrument_ftr, jerk_ftr, magnitude_ftr, variable_ftr, featAxis)
+setkey(tot_data, subject, activity, domain_ftr, acceleration_ftr, instrument_ftr, jerk_ftr, magnitude_ftr, variable_ftr, axis_ftr)
 
 ## TIDY data as output
 tidy_data <- tot_data[, list(count = .N, average = mean(value)), by=key(tot_data)]

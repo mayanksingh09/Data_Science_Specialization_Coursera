@@ -1,4 +1,4 @@
-subject	activity	domain_ftr	acceleration_ftr	instrument_ftr	jerk_ftr	magnitude_ftr	variable_ftr	featAxis	count	average
+subject	activity	domain_ftr	acceleration_ftr	instrument_ftr	jerk_ftr	magnitude_ftr	variable_ftr	axis_ftr	count	average
 1	LAYING	Time	NA	Gyroscope	NA	NA	Mean	X	50	-0.016553093978
 1	LAYING	Time	NA	Gyroscope	NA	NA	Mean	Y	50	-0.064486124088
 1	LAYING	Time	NA	Gyroscope	NA	NA	Mean	Z	50	0.14868943626

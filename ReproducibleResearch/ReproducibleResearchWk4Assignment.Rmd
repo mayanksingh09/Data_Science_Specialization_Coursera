@@ -1,0 +1,32 @@
+---
+title: "Reproducible Research Week 4 Assignment"
+author: "Mayank Singh"
+date: "12/9/2017"
+output: html_document
+---
+
+#STORM ANALYSIS
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE)
+```
+
+### Data Pre-processing steps
+
+* The data loaded into R using the read.csv() function.
+* 
+
+```{r readdata, cache = TRUE}
+library(dplyr)
+library(tidyr)
+storm <- read.csv("./data/storm.csv")
+most_harm <- storm %>%
+    group_by(EVTYPE) %>%
+    summarise(Total_Fatality = sum(FATALITIES), Total_Injuries = sum(INJURIES)) %>%
+    arrange(desc(Total_Fatality), desc(Total_Injuries))
+
+
+
+```
+
+As we can see `r as.character(most_harm$EVTYPE[1])` is the most dangerous 

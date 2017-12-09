@@ -1,0 +1,160 @@
+Reproducible Research Project 1 - Week 2
+========================================
+
+
+### Loading the data
+
+Loading the data using read.csv and setting the default NA strings while reading in as "NA".
+
+```{r echo=TRUE, warning=FALSE, message=FALSE, tidy=TRUE}
+Sys.setenv(TZ="Asia/Kolkata")
+data_activity <- read.csv("./data/activity.csv", na.strings = "NA")
+```
+
+Viewing the first five rows of the data:
+
+```{r echo = TRUE, message=FALSE, tidy=TRUE}
+head(data_activity)
+```
+
+
+### Question 1
+
+Transforming the data
+
+Steps to transform data:
+
+1. Convert date variable to date format using lubridate package.
+2. Consolidate values by Day.
+
+```{r echo = TRUE, warning=FALSE, message=FALSE, tidy=TRUE}
+library(lubridate)
+data_activity$date <- ymd(as.character(data_activity$date))
+data_activity$day <- wday(data_activity$date, abbr = F, label = T)
+```
+
+Consolidating values Total, Mean and Median values of steps taken each day
+
+```{r echo = TRUE,warning=FALSE, message=FALSE, tidy=TRUE}
+library(dplyr)
+library(tidyr)
+steps_measure <- data_activity %>%
+    group_by(day) %>%
+    summarise(steps_sum = sum(steps, na.rm = T), steps_mean = mean(steps, na.rm = T), steps_median = median(steps, na.rm = T))
+```
+
+
+### Question 2
+
+Plotting the histogram of Total steps taken each day
+
+```{r fig.height=4, echo = T,warning=FALSE, message=FALSE, tidy=TRUE}
+hist(steps_measure$steps_sum, main = "Total Steps Each Day", xlab = "Total Steps")
+```
+
+### Question 3
+
+The mean and median number of steps taken each day
+
+```{r echo=T, results='asis',warning=FALSE, tidy=TRUE}
+library(xtable)
+print(xtable(steps_measure[,c("day", "steps_mean", "steps_median")]), type = "html")
+```
+
+### Question 4
+
+Time series plot of average number of steps taken(by date)
+
+Steps:
+
+1. Creating a dataframe with values averaged at daily levels.
+2. Creating the time series plot.
+
+```{r fig.height=4, echo = T,warning=FALSE, message=FALSE, tidy=TRUE}
+steps_ts <- data_activity %>%
+    group_by(date) %>%
+    summarise(steps_avg = mean(steps, na.rm = T))
+
+plot(steps_ts$date, steps_ts$steps_avg, main = "Daily Average Steps", xlab = "Date", ylab= "Average Steps", type = "l")
+```
+
+
+### Question 5
+
+Maximum number of steps in an interval
+
+Steps:
+
+1. Create a dataframe with values averages by step intervals
+2. Identify the max interval.
+
+```{r echo=T,warning=FALSE,message=FALSE, tidy=TRUE}
+steps_int <- data_activity %>%
+    group_by(interval) %>%
+    summarise(steps_avg = mean(steps, na.rm = T))
+
+max_int <- steps_int$interval[which.max(steps_int$steps_avg)]
+```
+The interval `r max_int` has the highest average steps in the data.
+
+
+### Question 6
+
+Imputing missing data
+
+Steps:
+
+1. Finding the proportion of missing values w.r.t. the complete data.
+2. Finding if the data is missing at random or there is a pattern.
+2. Using appropriate Missing value imputation technique.
+3. Imputing the missing values using **predictive mean matching** (MICE package).
+
+```{r echo=T, fig.height= 4, message=F,warning=FALSE,message=FALSE, tidy=TRUE}
+library(mice)
+library(VIM)
+prop_missing <- paste(round(sum(is.na(data_activity$steps))/nrow(data_activity)*100,0), "%")
+
+aggr(data_activity[,c("steps", "date", "interval")], col=c('navyblue','red'), numbers=TRUE, sortVars=TRUE, labels=names(data_activity[,c("steps", "date", "interval")]), cex.axis=.7, gap=3, ylab=c("Histogram of missing data","Pattern"))
+
+data_activity$month <- month(data_activity$date)
+imputed_data <- mice(data_activity[,c("steps", "month", "day","interval")], m = 5, maxit = 2, method = "pmm", seed = 123)
+
+## using the second dataframe imputed values
+imputed_data <- complete(imputed_data, 2)
+```
+Approximately `r prop_missing` of the data is missing. 
+
+
+### Question 7
+
+Creating histogram to find total steps taken using imputed data.
+
+```{r echo = F, fig.height=4, results='asis',warning=FALSE,message=FALSE, tidy=TRUE}
+steps_measure_imp <- imputed_data %>%
+    group_by(day) %>%
+    summarise(steps_sum = sum(steps, na.rm = T), steps_mean = mean(steps, na.rm = T), steps_median = median(steps, na.rm = T))
+
+hist(steps_measure_imp$steps_sum, main = "Total Steps Each Day", xlab = "Total Steps")
+print(xtable(steps_measure[,c("day", "steps_mean", "steps_median")]), type = "html")
+```
+
+
+### Question 8
+
+Panel plot comparing average steps taken per 5-minute interval across weekdays and weekends
+
+Steps:
+
+1. Identify weekdays and weekends in the data.
+2. Consolidate at intervals and plot the data.
+
+```{r echo = F,warning = FALSE, fig.height = 4,message=FALSE, tidy=TRUE}
+library(ggplot2)
+imputed_data$day_type <- ifelse(imputed_data$day %in% c("Saturday","Sunday"), "Weekend","Weekday")
+
+daytype_df <- imputed_data %>%
+    group_by(interval, day_type) %>%
+    summarise(steps_avg = mean(steps))
+
+ggplot(daytype_df, aes(interval, steps_avg)) + geom_line() + facet_wrap(~day_type) + labs(title = "Average steps taken (5-min intervals)") + labs(x = "Intervals", y = "Average Steps")
+```

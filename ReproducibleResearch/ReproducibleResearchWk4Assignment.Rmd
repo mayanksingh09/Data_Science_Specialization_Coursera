@@ -1,32 +1,121 @@
 ---
-title: "Reproducible Research Week 4 Assignment"
+title: "MOST HARMFUL NATURAL DISASTERS"
 author: "Mayank Singh"
-date: "12/9/2017"
 output: html_document
 ---
 
-#STORM ANALYSIS
-
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(message = FALSE, warning = FALSE)
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, tidy = TRUE)
 ```
 
-### Data Pre-processing steps
+###SUMMARY
+
+* The analysis is carried out on NOAA Storm Database to find out the most harmful severe weather events.
+* The data was consolidated for each severe weather event.
+* Data transformation was carried out using R Programming to find relevant information.
+* **Tornados** were found to be the most harmful when it came to human health, the measure used for this was the count of fatalities and injuries.
+* **Tornados** caused over 90,000 injuries and 5,000 deaths in the period from 1950-2011.
+* The Top-5 contributors to the number of injuries and deaths were, **Tornados**, **Excessive Heat**, **Flash Flood**, **Heat** and **Lightning**.
+* **Floods** were the cause of highest economic damage in USA in the period 1950-2011.
+* **Floods** caused a total damage of more than 150 billion during this period.
+* The Top-5 most economically devastating events were, **Flood**, **Hurricane/Typhoon**, **Tornado**, **Storm Surge** and **Hail**.
+
+
+
+###DATA PROCESSING
 
 * The data loaded into R using the read.csv() function.
-* 
+* The parameter stringsAsFactors is set to False to ensure all character columns are read appropriately.
+* The libraries dplyr and tidyr are used for data wrangling.
+* The library ggplot2 and gridExtra is used for the visuals in the report.
+* Two new columns (PROPDMG_actual and CROPDMG_actual) are created to find out the total cost on a common scale converting million, billion and thousand values to a common scale.
 
-```{r readdata, cache = TRUE}
+```{r data_prepros, cache = TRUE}
 library(dplyr)
 library(tidyr)
-storm <- read.csv("./data/storm.csv")
+library(ggplot2)
+library(gridExtra)
+
+storm <- read.csv(bzfile("./data/StormData.csv.bz2"), stringsAsFactors = F)
+storm$PROPDMG_actual <- storm$PROPDMG
+storm$CROPDMG_actual <- storm$CROPDMG
+
+storm[storm$PROPDMGEXP == "M", "PROPDMG_actual"] <- storm[storm$PROPDMGEXP == "M", "PROPDMG"]*1000000
+storm[storm$CROPDMGEXP == "M", "CROPDMG_actual"] <- storm[storm$CROPDMGEXP == "M", "CROPDMG"]*1000000
+
+storm[storm$PROPDMGEXP == "K", "PROPDMG_actual"] <- storm[storm$PROPDMGEXP == "K", "PROPDMG"]*1000
+storm[storm$CROPDMGEXP == "K", "CROPDMG_actual"] <- storm[storm$CROPDMGEXP == "K", "CROPDMG"]*1000
+
+storm[storm$PROPDMGEXP == "B", "PROPDMG_actual"] <- storm[storm$PROPDMGEXP == "B", "PROPDMG"]*1000000000
+storm[storm$CROPDMGEXP == "B", "CROPDMG_actual"] <- storm[storm$CROPDMGEXP == "B", "CROPDMG"]*1000000000
+
+
+storm[storm$PROPDMGEXP == "m", "PROPDMG_actual"] <- storm[storm$PROPDMGEXP == "m", "PROPDMG"]*1000000
+storm[storm$CROPDMGEXP == "m", "CROPDMG_actual"] <- storm[storm$CROPDMGEXP == "m", "CROPDMG"]*1000000
+
+storm[storm$PROPDMGEXP == "h", "PROPDMG_actual"] <- storm[storm$PROPDMGEXP == "h", "PROPDMG"]*100
+storm[storm$CROPDMGEXP == "h", "CROPDMG_actual"] <- storm[storm$CROPDMGEXP == "h", "CROPDMG"]*100
+
+```
+
+
+
+### DATA TRANSFORMATION
+
+* Transforming data using the dplyr package to get relevant information to find out most harmful events (in terms of danger to human life and loss of property)
+* The FATALITIES and INJURIES columns were summarized at EVTYPE level and ordered descendingly by the two summarised columns.
+* The PROPDMG_actual and CROPDMG_actual columns were summarized at EVTYPE level and ordered descendingly by the sum of the two summarised columns.
+* The two so created data frames are used to find the relevant information.
+
+```{r datatrans, cache=T}
+
 most_harm <- storm %>%
     group_by(EVTYPE) %>%
     summarise(Total_Fatality = sum(FATALITIES), Total_Injuries = sum(INJURIES)) %>%
     arrange(desc(Total_Fatality), desc(Total_Injuries))
 
-
+eco_harm <- storm %>%
+    group_by(EVTYPE) %>%
+    summarise(Total_PROPDMG = sum(PROPDMG_actual), Total_CROPDMG = sum(CROPDMG_actual)) %>%
+    mutate(Total_DMG = Total_PROPDMG + Total_CROPDMG) %>%
+    arrange(desc(Total_DMG))
 
 ```
 
-As we can see `r as.character(most_harm$EVTYPE[1])` is the most dangerous 
+
+
+### RESULTS
+
+* **TORNADOS** are the leading cause of Human fatalities and injuries in the period 1950-2011.
+* **Lightning**, **Heat**, **Flash Floods** and **Excessive Heat** make up the remaining entries in the Top-5 causes of human harm in USA.
+
+* **Floods** are the leading cause of Economic damage (Crop Damage and Property Damage) in the period 1950-2011.
+* **Hail**, **Storm Surge**, **Tornado** and **Hurricane/Typhoon** make up the remaining entries in the Top-5 causes of Economic damage in USA.
+
+
+#### Human Harm Plot
+
+```{r top5humharm, cache=T}
+g_harm_1 <- ggplot(aes(x = reorder(EVTYPE, Total_Fatality), y = Total_Fatality), data = most_harm[1:5,]) + geom_bar(stat = "identity")
+g_harm_1 <- g_harm_1 + labs(x = "", y = "Total Fatalities", title = "Top-5 Harmful Events (Fatalities)") + theme_minimal() + theme(axis.text.x = element_text(angle = 60, hjust = 1))
+
+g_harm_2 <- ggplot(aes(x = reorder(EVTYPE, Total_Injuries), y = Total_Injuries), data = most_harm[1:5,]) + geom_bar(stat = "identity")
+g_harm_2 <- g_harm_2 + labs(x = "", y = "Total Injuries", title = "Top-5 Harmful Events (Injuries)") + theme_minimal() + theme(axis.text.x = element_text(angle = 60, hjust = 1))
+
+grid.arrange(g_harm_1, g_harm_2, ncol = 2)
+```
+
+`r paste0(most_harm$EVTYPE[1], "S")` are the leading cause of Fatalities and Injuries in the United States in the period 1950-2011 as shown above.
+
+
+#### Economic Damage Plot
+
+```{r top5ecoharm, cache=T}
+
+g_ecoharm <- ggplot(aes(x = reorder(EVTYPE, Total_DMG), y = Total_DMG/1000000000), data = eco_harm[1:5,]) + geom_bar(stat = "identity")
+g_ecoharm <- g_ecoharm + labs(x = "", y = "Total Damage (Billions)", title = "Top-5 Harmful Events (Economically)") + theme_minimal() + theme(axis.text.x = element_text(angle = 60, hjust = 1))
+
+g_ecoharm
+```
+
+`r paste0(eco_harm$EVTYPE[1], "S")` are the leading cause of Property and Crop damage in the United States in the period 1950-2011 as shown above.

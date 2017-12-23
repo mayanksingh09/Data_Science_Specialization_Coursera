@@ -227,3 +227,20 @@ predict(bsBasis, age = testing$age) # values predicted from the original trainin
 
 ### PREPROCESSING WITH PRINCIPAL COMPONENT ANALYSIS ###
 
+library(caret)
+library(kernlab)
+
+data(spam)
+set.seed(123)
+inTrain <- createDataPartition(y = spam$type, p = 0.75, list = FALSE)
+
+training <- spam[inTrain,]
+testing <- spam[-inTrain,]
+
+M <- abs(cor(training[,-58])) # correlation b/w all predictor variables
+diag(M) <- 0 # correlation of all variables with itself to be 0
+which(M > 0.8, arr.ind = T) # find > 0.8
+
+names(spam)[c(34,32)]
+
+plot(spam[,34], spam[,32]) #plot of num415, num 857

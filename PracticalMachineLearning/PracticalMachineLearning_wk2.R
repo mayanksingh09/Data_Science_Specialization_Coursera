@@ -244,3 +244,32 @@ which(M > 0.8, arr.ind = T) # find > 0.8
 names(spam)[c(34,32)]
 
 plot(spam[,34], spam[,32]) #plot of num415, num 857
+
+# rotate the plot
+X <- 0.71*training$num415 + 0.71*training$num857
+Y <- 0.71*training$num415 - 0.71*training$num857
+plot(X,Y)
+
+# Principal components in R
+smallSpam <- spam[,c(34,32)] #variables highly correlated with each other
+prComp <- prcomp(smallSpam)
+plot(prComp$x[,1], prComp$x[,2]) #similar to plot above 1st PC (adding comp together), 2nd PC (subtracting comps from each other)
+
+prComp$rotation #rotation matrix (hows its summing up two variables to get PCs)
+
+typeColor
+
+
+
+
+## Week 2 Quiz
+
+library(AppliedPredictiveModeling)
+data(concrete)
+library(caret)
+set.seed(1000)
+inTrain = createDataPartition(mixtures$CompressiveStrength, p = 3/4)[[1]]
+training = mixtures[ inTrain,]
+testing = mixtures[-inTrain,]
+
+

@@ -73,3 +73,31 @@ state_pop <- data.frame(State = state.abb, Pop = as.vector(state.x77[,1]))
 
 # Create hover text
 state_pop$hover <- with(state_pop, paste(State, '<br>', "Population:", Pop))
+
+# Make state borders red
+borders <- list(color = toRGB("red"))
+
+# Set up mapping options
+map_option <- list(
+    scope = 'usa',
+    projection = list(type = 'albers usa'),
+    showlakes = TRUE,
+    lakecolor = toRGB('white')
+)
+
+
+plot_ly(state_pop, z = state_pop$Pop, text = state_pop$hover, locations = state_pop$State, type = 'choropleth',
+        locationmode = 'USA-states', color = state_pop$Pop, colors = 'Blues',
+        marker = list(line = borders)) %>% 
+    layout(title = 'USA Population in 1975', geo = map_options) # check why the layout part of the code doesn't work
+
+
+set.seed(100)
+d <- diamonds[sample(nrow(diamonds), 1000), ]
+p <- ggplot(data = d, aes(x = carat, y = price)) +
+    geom_point(aes(text = paste("Clarity:", clarity)), size = 4) + geom_smooth(aes(colour = cut, fill = cut)) + facet_wrap(~ cut)
+
+
+gg <- ggplotly(p) # from plotly command
+
+plotly_POST(gg) # post it to plotly website (first initate it, get API key etc, save in .RProfile)

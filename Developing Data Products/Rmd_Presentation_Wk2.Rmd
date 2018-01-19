@@ -1,0 +1,52 @@
+---
+title: "Presentation"
+author: "Mayank Singh"
+date: "1/19/2018"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## New Slide
+Some Content
+
+***
+Slide Without a title
+
+## My title
+
+### A second level subheading
+
+- bullet 1
+- bullet 2
+
+1. item 1
+2. item 2
+
+*italicized text*
+
+**bold text**
+
+`for (i in 1:10)`
+
+
+## Data
+
+
+```{r data, comment= ""}
+head(mtcars)
+
+```
+
+
+## Plot
+```{r plot, echo = F, fig.align='center', fig.cap='MT Cars figure'}
+plot(mtcars$wt, mtcars$mpg, xlab = "Weight", ylab = "MPG")
+
+# create the github slides using gh-pages branch
+# check out NeoCities to host HTML pages for free
+```
+
+

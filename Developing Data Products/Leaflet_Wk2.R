@@ -99,7 +99,7 @@ md_cities %>%
 
 df <- data.frame(lat = runif(20, min = 39.25, max = 39.35),
                  lng = runif(20, min = -76.65, max = -76.55),
-                 col = sample(c("red", "blue", "green"), 20, replace = TRUE),
+                 col = sample(c("blue", "red", "green"), 20, replace = TRUE),
                  stringsAsFactors= FALSE)
 
 df %>% 

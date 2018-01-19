@@ -1,0 +1,49 @@
+---
+title: "Project 1 Week 2 - Interactive Map"
+author: "Mayank Singh"
+date: "1/20/2018"
+output: html_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = F, warning = F, error = F)
+```
+
+
+
+
+```{r readata, echo=FALSE, cache = TRUE}
+setwd("/Users/mayank/Documents/Data Challenge Jan2018/Data")
+h1bdata <- read.csv("h1b_TRAIN.csv", stringsAsFactors = F)
+
+leaflet_data <- h1bdata[!is.na(h1bdata$lat),]
+rm(h1bdata)
+leaflet_data <- leaflet_data[1:500,]
+```
+
+
+## H1B Mapped Data
+
+A map displaying a sample H1B statuses of the applications to the United States:
+
+
+
+```{r map, cache = TRUE}
+
+library(leaflet)
+
+pal <- colorFactor(
+    palette = c("darkgreen", "red", "blue", "yellow"),
+    domain = leaflet_data$CASE_STATUS
+)
+
+
+
+leaflet_data %>% 
+    leaflet() %>% 
+    addTiles() %>% 
+    addCircleMarkers(color = ~pal(CASE_STATUS)) %>% 
+    addLegend(labels = unique(leaflet_data$CASE_STATUS), colors = c("blue", "red", "darkgreen", "yellow"))
+
+```

@@ -1,0 +1,49 @@
+---
+title: "Project 2 Week 3"
+author: "Mayank Singh"
+date: "1/20/2018"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, error = FALSE, message = FALSE)
+```
+
+## Statewise Median Pay
+
+These slides contain the median pay for each state in the United States of America.
+
+```{r medianpay, echo = FALSE, cache = TRUE}
+library(plotly)
+library(tidyr)
+library(dplyr)
+
+setwd("/Users/mayank/Documents/Data Challenge Jan2018/Data")
+
+h1bdata <- read.csv("h1b_TRAIN.csv", stringsAsFactors = F)
+
+plotly_data <- h1bdata[!is.na(h1bdata$lat),]
+
+statewise_pay <- plotly_data %>%
+    separate(WORKSITE, c("CITY", "STATE"), ", ") %>%
+    group_by(STATE) %>%
+    summarise(Median_Pay = median(PREVAILING_WAGE, na.rm = T))
+
+
+    
+plot_ly(statewise_pay, x = statewise_pay$STATE, y = statewise_pay$Median_Pay, alpha = 0.7)
+
+```
+
+
+## Distribution of H1B Status
+
+This plot displays the status of H1B applications across America using the latitude and longitude values
+
+```{r latlon, cache = TRUE}
+plotly_data2 <- plotly_data[1:10000,]
+plotly_data2 <- plotly_data2[plotly_data2$lon < 0,]
+
+plot_ly(x = plotly_data2$lat, y = plotly_data2$lon, color = plotly_data2$CASE_STATUS, mode = "markers")
+
+```

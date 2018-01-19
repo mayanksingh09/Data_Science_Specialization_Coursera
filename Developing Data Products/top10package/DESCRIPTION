@@ -1,0 +1,10 @@
+Package: top10package
+Type: Package
+Title: Building a prediction model from the top 10 features
+Version: 0.1.0
+Author: Mayank Singh
+Maintainer: Mayank Singh <mayank.jan1995@gmail.com>
+Description: Functions for building and predicting models from models
+License: GPL-3
+Encoding: UTF-8
+LazyData: true

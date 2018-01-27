@@ -1,0 +1,60 @@
+---
+title: "Shiny Application Project"
+subtitle: "Developing Data Products - Coursera"
+author: "Mayank Singh"
+date: "1/19/2018"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+## Overview
+
+The shiny application displays an analysis of how Horsepower is correlated to the MPG of a vehicle.
+
+- Model 1 models the linear relationship between HP & MPG.
+
+- Model 2 models the polynomial (cubic) relationship between HP & MPG.
+
+
+
+## Analysis Plots
+
+A scatter plot of Horsepower v/s Miles per Gallon
+```{r cars, echo = FALSE}
+data("mtcars")
+model1 <- lm(hp ~ mpg, data = mtcars)
+model2 <- lm(hp ~ poly(mpg, 3), data = mtcars)
+
+plot(mtcars$mpg, mtcars$hp, xlab = "Miles Per Gallon",
+     ylab = "Horsepower", bty = "n", pch = 16,
+     xlim = c(10, 35), ylim = c(50, 350))
+
+
+```
+
+## Plotting Regression Models
+
+```{r pressure}
+
+plot(mtcars$mpg, mtcars$hp, xlab = "Miles Per Gallon",
+     ylab = "Horsepower", bty = "n", pch = 16,
+     xlim = c(10, 35), ylim = c(50, 350))
+
+abline(model1, col = "red", lwd = 2)
+predicted.intervals <- predict(model2, mtcars)
+lines(mtcars$mpg, predicted.intervals, col='green',lwd=2)
+
+```
+
+
+## Applicability of Analysis
+
+The analysis above can be used for variety of purposes:
+
+- It's applicability in finding the perfect tradeoff between power and efficiency is immense.
+- The above application can also be used as a supplement to a buying guide where individuals can assess the fuel economy v/s the torque needs they may have for their work.
+- It can also serve as a guide for Automobile Engineering students looking to explore the relationship between HP and MPG.

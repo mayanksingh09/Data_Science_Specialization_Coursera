@@ -6,6 +6,19 @@ date: "1/19/2018"
 output: ioslides_presentation
 ---
 
+<style>
+.footer {
+    color: black;
+    background: #E8E8E8;
+    position: fixed;
+    top: 90%;
+    text-align:center;
+    width:100%;
+}
+</style>
+
+
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 ```
@@ -19,6 +32,9 @@ The shiny application displays an analysis of how Horsepower is correlated to th
 
 - Model 2 models the polynomial (cubic) relationship between HP & MPG.
 
+Link to the Github Repository: [Github Repository](https://github.com/mayanksingh09/datasciencecoursera/tree/master/Developing%20Data%20Products/Project%204%20Shiny%20App)
+
+Link to the Shiny Application: [Shiny App](https://mayanksingh.shinyapps.io/Mayank_Project_4_Shiny_App/)
 
 
 ## Analysis Plots

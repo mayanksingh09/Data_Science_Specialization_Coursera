@@ -1,0 +1,10 @@
+The shiny app is a simple regression model predicting Horsepower using the MPG values.
+There are namely two models used on the app:
+
+1. Simple linear model (HP v/s MPG) - Model 1
+2. Cubic polynomial model (HP v/s MPG) - Model 2
+
+Steps to use the app:
+- To use the app simply use the slider to choose an MPG value you want to predict the HP for and click on the Submit button.
+- The check boxes will show and display the two curves for the respective models.
+- Make sure you click on Submit after changing the slider values to update the predictions.

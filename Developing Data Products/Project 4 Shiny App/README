@@ -8,3 +8,7 @@ Steps to use the app:
 - To use the app simply use the slider to choose an MPG value you want to predict the HP for and click on the Submit button.
 - The check boxes will show and display the two curves for the respective models.
 - Make sure you click on Submit after changing the slider values to update the predictions.
+
+ui.R - UI of the app.
+server.R - server file with all the functions.
+rsconnect - folder containing relevant rsconnect files.
